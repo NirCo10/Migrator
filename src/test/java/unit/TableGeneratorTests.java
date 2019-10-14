@@ -1,7 +1,7 @@
 package unit;
 
 import migrator.ddl.entities.Column;
-import migrator.sql_generator.TableGenerator;
+import migrator.sql_generator.table.TableGenerator;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,7 +42,7 @@ public class TableGeneratorTests {
     }
 
     @Test
-    public void createTableWithIdAndColumns() throws Exception {
+    public void createTableWithIdAndColumns() {
         // Arrange
         String columnsStr = columns.stream()
                 .map(Column::toString)
@@ -51,19 +51,33 @@ public class TableGeneratorTests {
                 " (" + id.toString() + " PRIMARY KEY, " + columnsStr;
 
         // Act
-        String sql = tableGenerator.createTable(schema, table).withId(id).andWithColumns(columns).get();
+        String sql = tableGenerator.createTable(schema, table).withId(id).withColumns(columns).get();
 
         // Assert
         assertThat(sql, is(expectedSql));
     }
 
     @Test
-    public void createTableWithoutId_throws() throws Exception {
+    public void createTableWithColumnAndNoId() {
         // Arrange
-        expectedException.expect(Exception.class);
-        expectedException.expectMessage("id must be created before creating columns");
+        String columnsStr = columns.stream()
+                .map(Column::toString)
+                .collect(Collectors.joining(", ", " (", ")"));
+        String expectedSql = "CREATE TABLE " + schema + "." + table + columnsStr;
 
         // Act
-        tableGenerator.createTable(schema, table).andWithColumns(columns).get();
+        String sql = tableGenerator.createTable(schema, table).withColumns(columns).get();
+
+        // Assert
+        assertThat(sql, is(expectedSql));
+    }
+
+    @Test
+    public void tableNameIsNull_throws() {
+        // Arrange
+        expectedException.expect(NullPointerException.class);
+
+        // Act
+        String sql = tableGenerator.createTable(schema, null).withColumns(columns).get();
     }
 }
