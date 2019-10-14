@@ -1,7 +1,6 @@
 package unit;
 
-import migrator.entites.input.table.column.ColumnInput;
-import migrator.entites.output.table.Table;
+import migrator.entites.table.Table;
 import org.apache.logging.log4j.util.Strings;
 import org.junit.Before;
 import org.junit.Rule;
@@ -18,36 +17,39 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class TableTest {
 
-    private ColumnInput id;
     private String tableName;
     private String schema;
-    private ColumnInput firstName;
-    private ColumnInput lastName;
+    private String idColumnName;
+    private String firstName;
+    private String lastName;
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
+    private int idColumnLength;
 
     @Before
     public void setUp() {
         schema = "test";
         tableName = "people";
-        id = new ColumnInput("id", "VARCHAR(9)");
-        firstName = new ColumnInput("first_name", "VARCHAR(250)");
-        lastName = new ColumnInput("last_name", "VARCHAR(250)");
+        idColumnName = "id";
+        firstName = "firstName";
+        lastName = "lastName";
+        idColumnLength = 9;
     }
 
     @Test
     public void createTableWithIdAndColumns() {
         // Arrange
         String expectedSql = "CREATE TABLE " + schema + "." + tableName + " (" +
-                id.toString() + " PRIMARY KEY, " +
-                firstName.toString() + " NOT NULL UNIQUE, " +
-                lastName.toString() + ");";
+                idColumnName + " VARCHAR(" + idColumnLength + ") PRIMARY KEY, " +
+                firstName + " VARCHAR(250) NOT NULL UNIQUE, " +
+                lastName + " VARCHAR(250));";
 
         // Act
-        String sql = Table.create(schema, tableName).withId(id)
-                .and().withColumn(firstName).unique().NotNullable()
-                .and().withColumn(lastName)
+        String sql = Table.create(schema, tableName)
+                .withIdColumn(idColumnName).asString(idColumnLength)
+                .and().withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(lastName).asString()
                 .and().toString();
 
         // Assert
@@ -58,13 +60,13 @@ public class TableTest {
     public void createTableWithColumnsOnly() {
         // Arrange
         String expectedSql = "CREATE TABLE " + schema + "." + tableName + " (" +
-                firstName.toString() + " NOT NULL UNIQUE, " +
-                lastName.toString() + ");";
+                firstName + " VARCHAR(250) NOT NULL UNIQUE, " +
+                lastName + " VARCHAR(250));";
 
         // Act
         String sql = Table.create(schema, tableName)
-                .withColumn(firstName).unique().NotNullable()
-                .and().withColumn(lastName)
+                .withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(lastName).asString()
                 .and().toString();
 
         // Assert
@@ -78,7 +80,7 @@ public class TableTest {
         expectedException.expectMessage("Table name can't be blank");
 
         // Act
-        Table.create(schema, null).withId(id)
+        Table.create(schema, null).withIdColumn(idColumnName).asString(idColumnLength)
                 .and().withColumn(firstName).unique().NotNullable()
                 .and().withColumn(lastName)
                 .and().toString();
@@ -91,9 +93,9 @@ public class TableTest {
         expectedException.expectMessage("Table name can't be blank");
 
         // Act
-        Table.create(schema, Strings.EMPTY).withId(id)
-                .and().withColumn(firstName).unique().NotNullable()
-                .and().withColumn(lastName)
+        Table.create(schema, Strings.EMPTY).withIdColumn(idColumnName).asString(idColumnLength)
+                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(lastName).asString()
                 .and().toString();
     }
 
@@ -104,24 +106,22 @@ public class TableTest {
         expectedException.expectMessage("Table name can't be blank");
 
         // Act
-        Table.create(schema, "      ").withId(id)
-                .and().withColumn(firstName).unique().NotNullable()
-                .and().withColumn(lastName)
+        Table.create(schema, "      ").withIdColumn(idColumnName).asString()
+                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(lastName).asString()
                 .and().toString();
     }
 
     @Test
     public void createTableWithBlankColumnName_throws() {
         // Arrange + Assert
-        ColumnInput columnInput = new ColumnInput("   ", "VARCHAR(10)");
-
         expectedException.expect(RuntimeException.class);
         expectedException.expectMessage("Column name can't be blank");
 
         // Act
-        Table.create(schema, tableName).withId(id)
-                .and().withColumn(firstName).unique().NotNullable()
-                .and().withColumn(columnInput)
+        Table.create(schema, tableName).withIdColumn(idColumnName).asString()
+                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(null).asString()
                 .and().toString();
     }
 }
