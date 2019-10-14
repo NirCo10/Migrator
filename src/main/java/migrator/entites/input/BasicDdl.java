@@ -6,7 +6,6 @@ import migrator.enums.ObjectType;
 
 import java.io.Serializable;
 
-//@Getter
 @AllArgsConstructor
 @RequiredArgsConstructor
 public abstract class BasicDdl implements Serializable {
