@@ -4,11 +4,13 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import migrator.entites.table.Table;
+import migrator.entites.table.column.data_types.BooleanDataType;
 import migrator.entites.table.column.data_types.DataType;
 import migrator.entites.table.column.data_types.StringDataType;
 
 import static java.util.Objects.requireNonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.logging.log4j.util.Strings.quote;
 
 @Setter(AccessLevel.PRIVATE)
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -19,6 +21,7 @@ public class Column {
     private final Table table;
     private String name;
     private DataType type;
+    private Object defaultValue;
     private boolean primaryKey;
     private boolean nullable = true;
     private boolean unique = false;
@@ -34,6 +37,7 @@ public class Column {
         str += primaryKey ? " PRIMARY KEY" : "";
         str += !nullable ? " NOT NULL" : "";
         str += unique ? " UNIQUE" : "";
+        str += defaultValue != null ? " DEFAULT " + quote(defaultValue.toString()) : "";
         return str;
     }
 
@@ -61,7 +65,6 @@ public class Column {
         return this.table;
     }
 
-
     public Column NotNullable() {
         this.setNullable(false);
 
@@ -74,14 +77,24 @@ public class Column {
         return this;
     }
 
-    public Column asString() {
-        this.type = new StringDataType(this, null);
+    public <VAL> Column withDefaultValue(VAL value) {
+        this.defaultValue = value;
 
         return this;
     }
 
-    public Column asString(int length) {
+    public Column asString() {
+        return asString(null);
+    }
+
+    public Column asString(Integer length) {
         this.type = new StringDataType(this, length);
+
+        return this;
+    }
+
+    public Column asBoolean() {
+        this.type = new BooleanDataType(this);
 
         return this;
     }

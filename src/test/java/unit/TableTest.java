@@ -26,6 +26,7 @@ public class TableTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
     private int idColumnLength;
+    private String isActiveColumn;
 
     @Before
     public void setUp() {
@@ -35,6 +36,7 @@ public class TableTest {
         firstName = "firstName";
         lastName = "lastName";
         idColumnLength = 9;
+        isActiveColumn = "isActive";
     }
 
     @Test
@@ -57,15 +59,36 @@ public class TableTest {
     }
 
     @Test
-    public void createTableWithColumnsOnly() {
+    public void createTableWithIdAndColumns_defaultString() {
+        // Arrange
+        String expectedSql = "CREATE TABLE " + schema + "." + tableName + " (" +
+                idColumnName + " VARCHAR(" + idColumnLength + ") PRIMARY KEY, " +
+                firstName + " VARCHAR(250) NOT NULL UNIQUE, " +
+                lastName + " VARCHAR(250) DEFAULT 'hello');";
+
+        // Act
+        String sql = Table.create(schema, tableName)
+                .withIdColumn(idColumnName).asString(idColumnLength)
+                .and().withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(lastName).asString().withDefaultValue("hello")
+                .and().toString();
+
+        // Assert
+        assertThat(sql, is(expectedSql));
+    }
+
+    @Test
+    public void createTableWithColumnsOnly_defaultBoolean() {
         // Arrange
         String expectedSql = "CREATE TABLE " + schema + "." + tableName + " (" +
                 firstName + " VARCHAR(250) NOT NULL UNIQUE, " +
+                isActiveColumn + " BOOLEAN DEFAULT 'true', " +
                 lastName + " VARCHAR(250));";
 
         // Act
         String sql = Table.create(schema, tableName)
                 .withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(isActiveColumn).asBoolean().withDefaultValue(true)
                 .and().withColumn(lastName).asString()
                 .and().toString();
 
