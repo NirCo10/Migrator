@@ -12,22 +12,21 @@ public class V0002_CreateAddressTable extends Migration {
 
     public V0002_CreateAddressTable() {
         super("0002", "creates addresses table");
-        up();
-        down();
     }
 
     @Override
-    public void up() {
+    protected String up() {
         String sql = Table.create("app", "addresses")
                 .withIdColumn("id").asString(9)
                 .and().withColumn("address").notNullable().asString(50)
                 .and().toString();
 
-        this.up = sql;
+        return sql;
     }
 
     @Override
-    public void down() {
-        this.down = "DROP TABLE app.addresses";
+    protected String down() {
+        String sql = "DROP TABLE app.addresses";
+        return sql;
     }
 }

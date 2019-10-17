@@ -12,11 +12,10 @@ public class V0001_CreatePeopleTable extends Migration {
 
     public V0001_CreatePeopleTable() {
         super("0001", "creates people table");
-        initMigration();
     }
 
     @Override
-    public void up() {
+    protected String up() {
         String sql = Table.create("app", "people")
                 .withIdColumn("id").asString(9)
                 .and().withColumn("first_name").notNullable().asString()
@@ -24,13 +23,13 @@ public class V0001_CreatePeopleTable extends Migration {
                 .and().withColumn("employed").asBoolean().withDefaultValue(true)
                 .and().toString();
 
-        this.up = sql;
+        return sql;
     }
 
     @Override
-    public void down() {
+    protected String down() {
         String sql = "DROP TABLE app.people;";
-        this.down = sql;
+        return sql;
     }
 
     private void initMigration() {

@@ -16,8 +16,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @Setter(PROTECTED)
-@RequiredArgsConstructor
 @Table(name = "migrations")
+@RequiredArgsConstructor(access = PROTECTED)
 @Inheritance(strategy = SINGLE_TABLE)
 @DiscriminatorColumn(name = "version", discriminatorType = STRING, length = 4)
 public abstract class Migration {
@@ -37,16 +37,18 @@ public abstract class Migration {
 
     @NotNull
     @Column(name = "up")
-    protected String up;
+    @Getter(lazy = true)
+    private final String up = this.up();
 
     @NotNull
     @Column(name = "down")
-    protected String down;
+    @Getter(lazy = true)
+    private final String down = this.down();
 
     @Setter(AccessLevel.PUBLIC)
     @Column(name = "did_run_last")
     protected boolean ranLast = false;
 
-    protected abstract void up();
-    protected abstract void down();
+    protected abstract String up();
+    protected abstract String down();
 }
