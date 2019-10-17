@@ -65,7 +65,7 @@ public class Column {
         return this.table;
     }
 
-    public Column NotNullable() {
+    public Column notNullable() {
         this.setNullable(false);
 
         return this;

@@ -60,6 +60,10 @@ public class Table {
         return table;
     }
 
+    public static Table create(String name) {
+        return create(null, name);
+    }
+
     public Column withIdColumn(String name) {
         return withColumn(name, true);
     }
