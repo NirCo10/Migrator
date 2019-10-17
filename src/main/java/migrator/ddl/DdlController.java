@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-import static java.util.Arrays.asList;
-
 @RestController
 public class DdlController {
 
@@ -26,7 +24,7 @@ public class DdlController {
     public DdlController(MigrationRepositoryWrapper migrationRepository, Engine engine) {
         this.migrationRepositoryWrapper = migrationRepository;
         this.engine = engine;
-        this.migrationRepositoryWrapper.save(asList(v0001_createPeopleTable, v0002_createAddressTable));
+//        this.migrationRepositoryWrapper.save(asList(v0001_createPeopleTable, v0002_createAddressTable));
     }
 
     @RequestMapping("/")

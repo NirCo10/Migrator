@@ -31,9 +31,4 @@ public class V0001_CreatePeopleTable extends Migration {
         String sql = "DROP TABLE app.people;";
         return sql;
     }
-
-    private void initMigration() {
-        up();
-        down();
-    }
 }
