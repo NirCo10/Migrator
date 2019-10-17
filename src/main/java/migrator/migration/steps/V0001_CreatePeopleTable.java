@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 
 @Entity
 @DiscriminatorValue("0001")
-public class V0001_CreatePeopleTable extends Migration implements Step {
+public class V0001_CreatePeopleTable extends Migration {
 
     public V0001_CreatePeopleTable() {
         super("0001", "creates people table");

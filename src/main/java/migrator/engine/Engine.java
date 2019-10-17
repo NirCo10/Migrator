@@ -3,7 +3,6 @@ package migrator.engine;
 import migrator.enums.ExecutionPhase;
 import migrator.migration.Migration;
 import migrator.migration.repository.MigrationRepositoryWrapper;
-import migrator.migration.steps.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import static migrator.enums.ExecutionPhase.DOWN;
 import static migrator.enums.ExecutionPhase.UP;
 
 @Component
-public class Engine<MigrationStep extends Migration & Step> {
+public class Engine {
 
     private final JdbcTemplate jdbcTemplate;
     private final MigrationRepositoryWrapper migrationRepositoryWrapper;
@@ -37,7 +36,7 @@ public class Engine<MigrationStep extends Migration & Step> {
 
         Migration lastRanMigration = migrationRepositoryWrapper.findLastRanMigration();
 
-        boolean isSuccess = run(UP, (MigrationStep) migration);
+        boolean isSuccess = run(UP, migration);
 
         if (isSuccess && lastRanMigration != null && lastRanMigration.isRanLast()) {
             lastRanMigration.setRanLast(false);
@@ -47,11 +46,11 @@ public class Engine<MigrationStep extends Migration & Step> {
         return isSuccess;
     }
 
-    public boolean down(MigrationStep migration) {
+    public boolean down(Migration migration) {
         return run(DOWN, migration);
     }
 
-    private boolean run(ExecutionPhase executionPhase, MigrationStep migration) {
+    private boolean run(ExecutionPhase executionPhase, Migration migration) {
         try {
             String sqlToExecute = executionPhase == UP ? migration.getUp() : migration.getDown();
             jdbcTemplate.execute(sqlToExecute);

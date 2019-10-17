@@ -46,4 +46,7 @@ public abstract class Migration {
     @Setter(AccessLevel.PUBLIC)
     @Column(name = "did_run_last")
     protected boolean ranLast = false;
+
+    protected abstract void up();
+    protected abstract void down();
 }
