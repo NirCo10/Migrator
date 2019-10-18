@@ -50,7 +50,7 @@ public class TableTest {
         // Act
         String sql = Table.create(schema, tableName)
                 .withIdColumn(idColumnName).asString(idColumnLength)
-                .and().withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(firstName).asString().unique().notNullable()
                 .and().withColumn(lastName).asString()
                 .and().toString();
 
@@ -69,7 +69,7 @@ public class TableTest {
         // Act
         String sql = Table.create(schema, tableName)
                 .withIdColumn(idColumnName).asString(idColumnLength)
-                .and().withColumn(firstName).asString().unique().NotNullable()
+                .and().withColumn(firstName).asString().unique().notNullable()
                 .and().withColumn(lastName).asString().withDefaultValue("hello")
                 .and().toString();
 
@@ -87,7 +87,7 @@ public class TableTest {
 
         // Act
         String sql = Table.create(schema, tableName)
-                .withColumn(firstName).asString().unique().NotNullable()
+                .withColumn(firstName).asString().unique().notNullable()
                 .and().withColumn(isActiveColumn).asBoolean().withDefaultValue(true)
                 .and().withColumn(lastName).asString()
                 .and().toString();
@@ -104,7 +104,7 @@ public class TableTest {
 
         // Act
         Table.create(schema, null).withIdColumn(idColumnName).asString(idColumnLength)
-                .and().withColumn(firstName).unique().NotNullable()
+                .and().withColumn(firstName).unique().notNullable()
                 .and().withColumn(lastName)
                 .and().toString();
     }
@@ -117,7 +117,7 @@ public class TableTest {
 
         // Act
         Table.create(schema, Strings.EMPTY).withIdColumn(idColumnName).asString(idColumnLength)
-                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(firstName).unique().notNullable().asString()
                 .and().withColumn(lastName).asString()
                 .and().toString();
     }
@@ -130,7 +130,7 @@ public class TableTest {
 
         // Act
         Table.create(schema, "      ").withIdColumn(idColumnName).asString()
-                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(firstName).unique().notNullable().asString()
                 .and().withColumn(lastName).asString()
                 .and().toString();
     }
@@ -143,7 +143,7 @@ public class TableTest {
 
         // Act
         Table.create(schema, tableName).withIdColumn(idColumnName).asString()
-                .and().withColumn(firstName).unique().NotNullable().asString()
+                .and().withColumn(firstName).unique().notNullable().asString()
                 .and().withColumn(null).asString()
                 .and().toString();
     }
