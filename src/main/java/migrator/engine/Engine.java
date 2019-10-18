@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotBlank;
 import java.util.NoSuchElementException;
 
 import static java.lang.String.format;
@@ -26,7 +25,7 @@ public class Engine {
         this.migrationRepositoryWrapper = migrationRepositoryWrapper;
     }
 
-    public boolean up(@NotBlank String version) {
+    public boolean up(String version) {
         Migration migration = migrationRepositoryWrapper.findByVersion(version);
 
         if (migration == null) {
